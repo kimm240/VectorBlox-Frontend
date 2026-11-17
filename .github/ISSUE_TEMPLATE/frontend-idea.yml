@@ -1,0 +1,23 @@
+name: MLIR frontend idea
+description: Suggest a useful legalization, analysis or transformation for the frontend.
+title: '[Idea] '
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or model pattern
+      description: Which unsupported operation, graph pattern or frontend limitation would this address?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed MLIR approach
+      description: Describe the transformation or analysis. Links to existing MLIR passes, interfaces or upstream implementations are welcome.
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: How could we validate it?
+      description: Suggest a small reproducer, expected benefit, safety conditions and a before/after numerical check.

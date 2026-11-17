@@ -1,0 +1,35 @@
+name: Unsupported model
+description: Report a model or exported ONNX graph that fails legalization or SDK compilation.
+title: '[Model] '
+body:
+  - type: input
+    id: model
+    attributes:
+      label: Model and source
+      description: Model name, variant, repository URL and commit/version.
+    validations:
+      required: true
+  - type: textarea
+    id: export
+    attributes:
+      label: Export and environment
+      placeholder: |
+        Input names/shapes/dtypes:
+        ONNX opset and exporter version:
+        Frontend commit:
+        VectorBlox SDK version (if applicable):
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction and failure
+      description: Paste the command, failing stage, error log and rewrite report. A minimal ONNX reproducer or a script generating it is especially useful.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result and numerical evidence
+      description: Describe the expected behavior. If conversion succeeds but outputs differ, include the before/after comparison report and reproducible input details.

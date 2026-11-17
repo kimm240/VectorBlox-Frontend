@@ -1,0 +1,8 @@
+{
+  "description": "Pre-size LLVM JSON initializer-list objects using the known property count; preserve Object ABI and values.",
+  "target": "include/llvm/Support/JSON.h",
+  "before_sha256": "992ef9aab133ba0c2f5cfa0abc9bb080b3f5d52134334ad0dc3f4b11294efc62",
+  "after_sha256": "cf6cecc3c88c9d46193e34f028346f0409ec7cbbe0063b3415ec82a156d79b8c",
+  "old": "inline Object::Object(std::initializer_list<KV> Properties) {",
+  "new": "inline Object::Object(std::initializer_list<KV> Properties)\n    : M(Properties.size()) {"
+}

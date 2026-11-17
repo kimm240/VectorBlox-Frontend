@@ -1,0 +1,8 @@
+{
+  "description": "Compact each completed nonempty parsed JSON object; preserve parser duplicate-key and error behavior.",
+  "target": "lib/Support/JSON.cpp",
+  "before_sha256": "60bc9eba33f78dffdeecf8a1d293ae3e12229d2e12e2a3e3f6ef08ac4f6f7947",
+  "after_sha256": "f41b2ef147ec01a8c074fb6d96c009456cd9d44aa209684ec7dce1a2e1094d26",
+  "old": "      case '}':\n        return true;",
+  "new": "      case '}':\n        O.compact();\n        return true;"
+}

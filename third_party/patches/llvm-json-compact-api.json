@@ -1,0 +1,8 @@
+{
+  "description": "Expose allocation-only JSON object capacity compaction without changing object layout.",
+  "target": "include/llvm/Support/JSON.h",
+  "before_sha256": "cf6cecc3c88c9d46193e34f028346f0409ec7cbbe0063b3415ec82a156d79b8c",
+  "after_sha256": "44e78e4193be156f034e670c5d7ffb3b679c7f4420939f10a0fbf8dd1ff4f076",
+  "old": "  void clear() { M.clear(); }",
+  "new": "  void clear() { M.clear(); }\n  // Local allocation-only extension: retain all properties and values.\n  void compact();"
+}

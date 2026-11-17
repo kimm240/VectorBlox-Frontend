@@ -1,0 +1,8 @@
+{
+  "description": "Compact object hash buckets by moving keys and values into an exactly pre-sized DenseMap.",
+  "target": "lib/Support/JSON.cpp",
+  "before_sha256": "5d888947e27e33abe2cc29028a37501a08b14164076663ec9c2ac28d55b023f5",
+  "after_sha256": "60bc9eba33f78dffdeecf8a1d293ae3e12229d2e12e2a3e3f6ef08ac4f6f7947",
+  "old": "Value &Object::operator[](const ObjectKey &K) {",
+  "new": "void Object::compact() {\n  if (M.empty())\n    return;\n  Storage Packed(M.size());\n  if (Packed.getMemorySize() >= M.getMemorySize())\n    return;\n  for (auto &KV : M)\n    Packed.try_emplace(std::move(KV.first), std::move(KV.second));\n  M = std::move(Packed);\n}\n\nValue &Object::operator[](const ObjectKey &K) {"
+}
