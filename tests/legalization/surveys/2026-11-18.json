@@ -1,0 +1,740 @@
+{
+  "date": "2026-11-18",
+  "scope": "ONNX CPU only; no SDK VNNX compilation or board execution",
+  "cpu": "Intel Core i7-1355U",
+  "sdk_inventory_commit": "f5a428c3c0ee7e06ad06657c5fcdcc1eda8cf046",
+  "python": "3.10.12",
+  "frozen_pass_files": [
+    "052c429bc7731cc6e32009915ae291f52dda1f7fdf35f007b7d93481977f4e72  build/vbx-rewrite",
+    "7003f4f364b85593607d531e579ad84668ad51065ab5f76e92d6a71c5cfda81f  src/Legalization/ChannelMean.cpp",
+    "0af2dbd45edcc4c1b576e87857f8456abbee1ba723a5e5488ffb1c4e14e7935f  src/Legalization/ImportExport.cpp",
+    "208d6ccc76c0f0e86e9281ab1691213746597edfd0fed069d126f5b1296475bc  src/Legalization/Legalize.cpp",
+    "a00855148606573773dbcf9c63297dbe5ad06cefc5758aab9fb9bd8a9ef848da  src/Legalization/Passes.cpp",
+    "f8d2f7bd6c1a0d6844cf95d53c4071d8a0c68444c1202f16454bc8e986dd6e1c  src/Legalization/Unfold.cpp"
+  ],
+  "models": [
+    {
+      "name": "superpoint",
+      "status": "passed",
+      "stage": "complete",
+      "torch": "2.3.0+cpu",
+      "onnxruntime": "1.18.1",
+      "binary_sha256": "052c429bc7731cc6e32009915ae291f52dda1f7fdf35f007b7d93481977f4e72",
+      "repository": "magicleap/SuperPointPretrainedNetwork",
+      "revision": "1fda796addba9b6f8e79d586a3699700a86b1cea",
+      "weight_sha256": "52b6708629640ca883673b5d5c097c4ddad37d8048b33f09c8ca0d69db12c40e",
+      "scope": "dense logits/descriptors; sparse NMS excluded",
+      "inputs": {
+        "image": [
+          1,
+          1,
+          256,
+          320
+        ]
+      },
+      "rewrite_wall_ms": 16.844137106090784,
+      "rewrites": 0,
+      "skipped": {},
+      "latency": {
+        "before": {
+          "median_ms": 86.0664855,
+          "p95_ms": 89.5885732,
+          "samples_ms": [
+            91.411013,
+            86.707829,
+            61.289815,
+            87.18054,
+            61.586836,
+            85.425142,
+            61.591477,
+            87.160343,
+            61.384608,
+            86.909552,
+            61.717985,
+            88.255536,
+            61.904382,
+            87.080093,
+            61.441654,
+            87.206627,
+            61.398938,
+            90.67924,
+            70.699614,
+            87.109979,
+            61.363441,
+            87.300037,
+            61.666843,
+            86.901365,
+            61.719199,
+            87.352964,
+            61.552723,
+            87.25656,
+            61.652824,
+            87.027018
+          ]
+        },
+        "after": {
+          "median_ms": 75.9090845,
+          "p95_ms": 89.6989117,
+          "samples_ms": [
+            87.16499,
+            61.687557,
+            87.45516,
+            61.299472,
+            87.01321,
+            61.729563,
+            87.850789,
+            61.400917,
+            87.156159,
+            61.470208,
+            90.015242,
+            61.65646,
+            88.401121,
+            61.94005,
+            89.737294,
+            61.255901,
+            86.900358,
+            61.727248,
+            89.416635,
+            64.917811,
+            89.652,
+            62.13061,
+            87.510418,
+            61.272282,
+            87.218461,
+            61.411866,
+            87.503157,
+            61.48788,
+            87.28419,
+            61.457431
+          ]
+        }
+      },
+      "latency_settings": {
+        "provider": "CPUExecutionProvider",
+        "threads": 2,
+        "inter_op_threads": 1,
+        "warmup": 5,
+        "runs": 30,
+        "optimizations": "ORT_ENABLE_ALL",
+        "includes": "synchronous session.run; excludes load/export/preprocessing",
+        "alternating_order": true
+      },
+      "size_bytes": {
+        "before": 5209418,
+        "after": 5209418
+      },
+      "before_sha256": "9b265ce68308d63d6b43d6a0bebfa96ca0f1d893765efa7df54c8093ea3c73ea",
+      "after_sha256": "9b265ce68308d63d6b43d6a0bebfa96ca0f1d893765efa7df54c8093ea3c73ea",
+      "numerical": {
+        "passed": true,
+        "cases": 3,
+        "atol": 0.0001,
+        "rtol": 0.001,
+        "max_abs_error": 0.0
+      }
+    },
+    {
+      "name": "deit-tiny",
+      "status": "passed",
+      "stage": "complete",
+      "torch": "2.3.0+cpu",
+      "onnxruntime": "1.18.1",
+      "binary_sha256": "052c429bc7731cc6e32009915ae291f52dda1f7fdf35f007b7d93481977f4e72",
+      "implementation": "timm 0.9.16",
+      "pretrained_cfg": {
+        "url": "https://dl.fbaipublicfiles.com/deit/deit_tiny_patch16_224-a1311bcf.pth",
+        "hf_hub_id": "timm/deit_tiny_patch16_224.fb_in1k",
+        "architecture": "deit_tiny_patch16_224",
+        "tag": "fb_in1k",
+        "custom_load": false,
+        "input_size": [
+          3,
+          224,
+          224
+        ],
+        "fixed_input_size": true,
+        "interpolation": "bicubic",
+        "crop_pct": 0.9,
+        "crop_mode": "center",
+        "mean": [
+          0.485,
+          0.456,
+          0.406
+        ],
+        "std": [
+          0.229,
+          0.224,
+          0.225
+        ],
+        "num_classes": 1000,
+        "pool_size": null,
+        "first_conv": "patch_embed.proj",
+        "classifier": "head"
+      },
+      "scope": "ImageNet classification logits",
+      "inputs": {
+        "image": [
+          1,
+          3,
+          224,
+          224
+        ]
+      },
+      "rewrite_wall_ms": 85.51424706820399,
+      "rewrites": 122,
+      "skipped": {
+        "gather_requires_rank5_or_rank6_scalar": 2,
+        "gelu_final_scale": 12,
+        "legalize_requires_static_fp32": 2,
+        "not_supported_static_unfold": 13,
+        "softmax_tile_policy": 24
+      },
+      "latency": {
+        "before": {
+          "median_ms": 23.863049500000002,
+          "p95_ms": 24.57226795,
+          "samples_ms": [
+            24.365839,
+            24.12427,
+            23.327869,
+            24.548041,
+            23.356506,
+            24.258263,
+            23.701878,
+            23.891305,
+            23.866499,
+            24.061532,
+            23.438391,
+            24.116279,
+            23.34591,
+            23.8596,
+            23.517085,
+            24.463521,
+            23.424305,
+            24.294361,
+            23.32905,
+            23.892993,
+            23.359697,
+            24.055778,
+            23.415168,
+            24.59209,
+            23.482278,
+            23.878089,
+            23.510199,
+            23.762454,
+            23.571272,
+            24.631777
+          ]
+        },
+        "after": {
+          "median_ms": 837.9616364999999,
+          "p95_ms": 929.41971975,
+          "samples_ms": [
+            828.637493,
+            830.448074,
+            844.174017,
+            865.247217,
+            930.23388,
+            920.315597,
+            928.424635,
+            1016.309059,
+            845.630107,
+            828.750292,
+            828.061439,
+            833.247183,
+            836.04083,
+            848.935302,
+            831.175797,
+            858.667529,
+            831.381298,
+            829.82714,
+            828.18951,
+            898.269826,
+            841.790244,
+            839.882443,
+            830.988079,
+            833.247486,
+            843.123859,
+            832.189169,
+            845.544331,
+            840.765491,
+            829.369838,
+            832.573557
+          ]
+        }
+      },
+      "latency_settings": {
+        "provider": "CPUExecutionProvider",
+        "threads": 2,
+        "inter_op_threads": 1,
+        "warmup": 5,
+        "runs": 30,
+        "optimizations": "ORT_ENABLE_ALL",
+        "includes": "synchronous session.run; excludes load/export/preprocessing",
+        "alternating_order": true
+      },
+      "size_bytes": {
+        "before": 22984574,
+        "after": 45419599
+      },
+      "before_sha256": "c0229813ca4005be68b25ff6eb6d8bb55b1415f3b0eee4e120b7f517440be99a",
+      "after_sha256": "f3d1796cc89f2a1af923e743c08145fed0b03ffae763e6f0ab194f3bfb02552d",
+      "numerical": {
+        "passed": true,
+        "cases": 3,
+        "atol": 0.0001,
+        "rtol": 0.001,
+        "max_abs_error": 2.726912498474121e-06
+      }
+    },
+    {
+      "name": "dinov2-small",
+      "status": "passed",
+      "stage": "complete",
+      "torch": "2.3.0+cpu",
+      "onnxruntime": "1.18.1",
+      "binary_sha256": "052c429bc7731cc6e32009915ae291f52dda1f7fdf35f007b7d93481977f4e72",
+      "repository": "facebook/dinov2-small",
+      "revision": "ed25f3a31f01632728cabb09d1542f84ab7b0056",
+      "scope": "patch features",
+      "inputs": {
+        "image": [
+          1,
+          3,
+          224,
+          224
+        ]
+      },
+      "rewrite_wall_ms": 315.9548939438537,
+      "rewrites": 145,
+      "skipped": {
+        "gelu_final_scale": 24,
+        "legalize_requires_static_fp32": 2,
+        "not_supported_static_unfold": 38
+      },
+      "latency": {
+        "before": {
+          "median_ms": 92.20927950000001,
+          "p95_ms": 107.81007159999996,
+          "samples_ms": [
+            92.40192,
+            92.161761,
+            64.707569,
+            92.420741,
+            64.734533,
+            92.320151,
+            64.923394,
+            92.728746,
+            65.082989,
+            99.858828,
+            65.633463,
+            93.128276,
+            64.731447,
+            92.256798,
+            64.807274,
+            100.16732,
+            64.747732,
+            92.546625,
+            64.78957,
+            98.585643,
+            65.361219,
+            93.735314,
+            65.161719,
+            92.77525,
+            64.704848,
+            96.364558,
+            75.839484,
+            115.242625,
+            87.808843,
+            114.063232
+          ]
+        },
+        "after": {
+          "median_ms": 333.2605125,
+          "p95_ms": 427.19431865,
+          "samples_ms": [
+            345.008387,
+            328.957537,
+            344.38521,
+            327.288945,
+            344.216579,
+            328.379577,
+            334.242537,
+            331.415608,
+            345.127323,
+            327.118428,
+            344.562895,
+            328.429755,
+            328.728621,
+            329.233715,
+            344.214892,
+            327.458671,
+            344.133436,
+            327.675266,
+            345.564811,
+            327.388699,
+            329.761988,
+            327.156678,
+            346.744725,
+            332.278488,
+            344.761908,
+            331.949343,
+            408.694691,
+            426.134456,
+            435.735984,
+            428.061479
+          ]
+        }
+      },
+      "latency_settings": {
+        "provider": "CPUExecutionProvider",
+        "threads": 2,
+        "inter_op_threads": 1,
+        "warmup": 5,
+        "runs": 30,
+        "optimizations": "ORT_ENABLE_ALL",
+        "includes": "synchronous session.run; excludes load/export/preprocessing",
+        "alternating_order": true
+      },
+      "size_bytes": {
+        "before": 88389961,
+        "after": 174772632
+      },
+      "before_sha256": "db8a404c37429eac9aa72a244605e302e355cf345f4a8f84936753506273296e",
+      "after_sha256": "2a191ba5a8b89c74ff257b4e8729125c2a6d54fd739442da422c5af9ff3bb4a9",
+      "numerical": {
+        "passed": true,
+        "cases": 3,
+        "atol": 0.0001,
+        "rtol": 0.001,
+        "max_abs_error": 0.00010013580322265625
+      }
+    },
+    {
+      "name": "mobilevit-xxs",
+      "status": "passed",
+      "stage": "complete",
+      "torch": "2.3.0+cpu",
+      "onnxruntime": "1.18.1",
+      "binary_sha256": "052c429bc7731cc6e32009915ae291f52dda1f7fdf35f007b7d93481977f4e72",
+      "implementation": "timm 0.9.16",
+      "pretrained_cfg": {
+        "url": "",
+        "hf_hub_id": "timm/mobilevit_xxs.cvnets_in1k",
+        "architecture": "mobilevit_xxs",
+        "tag": "cvnets_in1k",
+        "custom_load": false,
+        "input_size": [
+          3,
+          256,
+          256
+        ],
+        "fixed_input_size": false,
+        "interpolation": "bicubic",
+        "crop_pct": 0.9,
+        "crop_mode": "center",
+        "mean": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "std": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "num_classes": 1000,
+        "pool_size": [
+          8,
+          8
+        ],
+        "first_conv": "stem.conv",
+        "classifier": "head.fc"
+      },
+      "scope": "ImageNet classification logits",
+      "inputs": {
+        "image": [
+          1,
+          3,
+          256,
+          256
+        ]
+      },
+      "rewrite_wall_ms": 21.612255019135773,
+      "rewrites": 58,
+      "skipped": {
+        "batch_matmul_outer_product_policy": 18,
+        "gelu_final_scale": 43,
+        "not_supported_static_unfold": 39,
+        "softmax_requires_rank4": 9
+      },
+      "latency": {
+        "before": {
+          "median_ms": 13.853344,
+          "p95_ms": 14.1187548,
+          "samples_ms": [
+            13.606396,
+            13.904733,
+            13.544214,
+            13.893963,
+            13.50463,
+            13.971983,
+            13.475107,
+            13.918316,
+            13.539676,
+            13.88195,
+            13.497295,
+            13.862496,
+            13.463833,
+            13.874585,
+            13.736414,
+            13.916993,
+            15.910222,
+            14.128662,
+            13.455768,
+            14.106646,
+            13.510368,
+            13.92092,
+            13.505705,
+            14.068273,
+            13.482032,
+            13.884565,
+            13.411019,
+            13.861388,
+            13.406393,
+            13.8453
+          ]
+        },
+        "after": {
+          "median_ms": 13.7795755,
+          "p95_ms": 14.579361950000001,
+          "samples_ms": [
+            14.270378,
+            13.525524,
+            14.631204,
+            13.480446,
+            14.534081,
+            13.476301,
+            14.109463,
+            13.269103,
+            14.05317,
+            13.252996,
+            14.033627,
+            13.277073,
+            14.035208,
+            13.230206,
+            14.139695,
+            13.275433,
+            14.083199,
+            13.281175,
+            14.041759,
+            13.320013,
+            14.08176,
+            13.342858,
+            14.066514,
+            13.38828,
+            14.105602,
+            13.497702,
+            14.61641,
+            13.257676,
+            14.051258,
+            13.230638
+          ]
+        }
+      },
+      "latency_settings": {
+        "provider": "CPUExecutionProvider",
+        "threads": 2,
+        "inter_op_threads": 1,
+        "warmup": 5,
+        "runs": 30,
+        "optimizations": "ORT_ENABLE_ALL",
+        "includes": "synchronous session.run; excludes load/export/preprocessing",
+        "alternating_order": true
+      },
+      "size_bytes": {
+        "before": 5247893,
+        "after": 8695760
+      },
+      "before_sha256": "4f53743a85af380ce04a67a0cec19cc0cc649a50f7ab0bcfe9158aac3d01b17e",
+      "after_sha256": "a7f347a2af90d207686e4bb6a8158546b78166f59e68713c7821a558c71ce716",
+      "numerical": {
+        "passed": true,
+        "cases": 3,
+        "atol": 0.0001,
+        "rtol": 0.001,
+        "max_abs_error": 0.0003662109375
+      }
+    },
+    {
+      "name": "segformer-b0",
+      "status": "passed",
+      "stage": "complete",
+      "torch": "2.3.0+cpu",
+      "onnxruntime": "1.18.1",
+      "binary_sha256": "052c429bc7731cc6e32009915ae291f52dda1f7fdf35f007b7d93481977f4e72",
+      "repository": "nvidia/segformer-b0-finetuned-ade-512-512",
+      "revision": "489d5cd81a0b59fab9b7ea758d3548ebe99677da",
+      "scope": "ADE20K segmentation logits",
+      "inputs": {
+        "image": [
+          1,
+          3,
+          512,
+          512
+        ]
+      },
+      "rewrite_wall_ms": 101.901667076163,
+      "rewrites": 94,
+      "skipped": {
+        "batch_matmul_outer_product_policy": 12,
+        "legalize_requires_static_fp32": 20,
+        "not_supported_static_unfold": 72,
+        "softmax_tile_policy": 8
+      },
+      "latency": {
+        "before": {
+          "median_ms": 237.4920835,
+          "p95_ms": 253.08780775,
+          "samples_ms": [
+            249.884602,
+            230.262954,
+            234.274198,
+            254.8627,
+            229.598192,
+            247.903444,
+            229.308687,
+            294.3881,
+            240.709969,
+            246.739872,
+            231.548691,
+            249.288901,
+            232.03787,
+            245.216935,
+            228.756698,
+            246.179248,
+            230.84344,
+            244.005861,
+            230.01584,
+            243.476453,
+            224.815462,
+            245.543487,
+            224.000876,
+            248.811513,
+            229.34603,
+            224.911617,
+            226.352798,
+            250.542768,
+            220.976853,
+            250.918495
+          ]
+        },
+        "after": {
+          "median_ms": 390.993104,
+          "p95_ms": 412.67574824999997,
+          "samples_ms": [
+            405.541112,
+            391.612914,
+            418.271069,
+            405.059143,
+            405.226945,
+            389.178829,
+            402.933207,
+            387.767549,
+            411.065956,
+            387.956144,
+            404.337069,
+            390.373294,
+            403.320102,
+            389.304261,
+            406.536857,
+            383.501764,
+            413.992851,
+            386.403814,
+            401.590662,
+            388.810957,
+            399.839829,
+            388.419713,
+            389.226401,
+            383.701982,
+            401.938643,
+            380.986473,
+            402.680244,
+            385.62001,
+            386.222239,
+            384.148282
+          ]
+        }
+      },
+      "latency_settings": {
+        "provider": "CPUExecutionProvider",
+        "threads": 2,
+        "inter_op_threads": 1,
+        "warmup": 5,
+        "runs": 30,
+        "optimizations": "ORT_ENABLE_ALL",
+        "includes": "synchronous session.run; excludes load/export/preprocessing",
+        "alternating_order": true
+      },
+      "size_bytes": {
+        "before": 15226786,
+        "after": 27141513
+      },
+      "before_sha256": "937e1f6f1dae505a0f09c0927284bc91b54cd44bed98920127758360c58403c3",
+      "after_sha256": "7f165c168afe65e15695b17acddd5a68778564acff47b3f04f43e5d52856df66",
+      "numerical": {
+        "passed": true,
+        "cases": 3,
+        "atol": 0.0001,
+        "rtol": 0.001,
+        "max_abs_error": 2.6702880859375e-05
+      }
+    },
+    {
+      "name": "lightglue",
+      "status": "failed",
+      "stage": "export",
+      "torch": "2.3.0+cpu",
+      "onnxruntime": "1.18.1",
+      "binary_sha256": "052c429bc7731cc6e32009915ae291f52dda1f7fdf35f007b7d93481977f4e72",
+      "repository": "cvg/LightGlue",
+      "revision": "5a650c444718caffc2669dc0094cde908f42dd73",
+      "scope": "128 SuperPoint keypoints per image; adaptive stopping/pruning and flash disabled; matches and scores",
+      "inputs": {
+        "k0": [
+          1,
+          128,
+          2
+        ],
+        "d0": [
+          1,
+          128,
+          256
+        ],
+        "k1": [
+          1,
+          128,
+          2
+        ],
+        "d1": [
+          1,
+          128,
+          256
+        ]
+      },
+      "error": "list index out of range"
+    }
+  ],
+  "environment": {
+    "torch": "2.3.0+cpu",
+    "torchvision": "0.18.0+cpu",
+    "numpy": "1.23.5",
+    "onnx": "1.16.1",
+    "onnxruntime": "1.18.1",
+    "timm": "0.9.16",
+    "transformers": "4.40.2",
+    "huggingface-hub": "0.23.5",
+    "safetensors": "0.4.3",
+    "kornia": "0.7.2"
+  }
+}

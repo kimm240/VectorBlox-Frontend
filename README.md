@@ -27,7 +27,9 @@ See `third_party/dependencies.lock.json`, [third-party notices](docs/THIRD_PARTY
 
 ## Legalization
 
-VectorBlox SDK 3.1 cannot directly compile certain ONNX patterns, such as channel-wise mean reduction and static unfold.
+**Target:** VectorBlox SDK 3.1
+
+SDK cannot directly compile certain ONNX patterns, such as channel-wise mean reduction and static unfold.
 MLIR legalization passes rewrite these patterns into combinations of SDK-supported operators.
 
 ### 1. Verified models

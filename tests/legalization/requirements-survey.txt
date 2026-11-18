@@ -1,0 +1,10 @@
+-r requirements-models.txt
+timm==0.9.16
+transformers==4.40.2
+huggingface-hub==0.23.5
+safetensors==0.4.3
+tokenizers==0.19.1
+einops==0.8.0
+kornia==0.7.2
+kornia-rs==0.1.9
+regex==2024.5.15

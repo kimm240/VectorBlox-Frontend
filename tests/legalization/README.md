@@ -25,7 +25,7 @@ C++ checks run through `ctest --test-dir build --output-on-failure` after
 `python3 tools/bootstrap.py --test`. GitHub Actions runs these generated fixtures;
 weights and full models are not downloaded by CI.
 
-## XFeat and Depth Anything V2
+## Models
 
 ### Generate ONNX and validate end to end
 
@@ -102,3 +102,20 @@ python tests/legalization/compare_onnx.py input.onnx legalized.onnx --report num
 
 Pattern tests use `atol=rtol=1e-4`, channel mean uses `3e-5`, and unfold requires
 exact equality. The comparator rejects nonfinite outputs and shape/dtype mismatches.
+
+## Frozen-pass model survey
+
+See [survey results](surveys/2026-11-18.md) for additional models outside the
+SDK 3.1 tutorial inventory. The survey leaves C++ patterns unchanged and measures
+ONNX CPU inference, not VNNX or board latency.
+
+```sh
+python -m pip install -r tests/legalization/requirements-survey.txt
+python tests/legalization/survey_models.py mobilevit-xxs
+```
+
+Other choices: `superpoint`, `deit-tiny`, `dinov2-small`, `segformer-b0`,
+`lightglue`. Official source code and pretrained weights are downloaded into
+local caches; their licenses remain applicable. This manual survey is separate
+from normal CI. Results and models are written under `artifacts/model-survey/`.
+A model with zero rewrites is reported as unchanged, not as newly supported.
