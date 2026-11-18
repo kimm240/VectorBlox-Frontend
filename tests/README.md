@@ -8,7 +8,7 @@ cmake --build build --target vbx-rewrite vbx-rewrite-tests -j 4
 ctest --test-dir build --output-on-failure
 ```
 
-Install `requirements-test.txt` in a test environment for the Python suites.
+Install `tests/requirements.txt` in a test environment for the Python suites.
 Run from the project root:
 
 ```sh

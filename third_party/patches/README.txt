@@ -1,6 +1,6 @@
 Local dependency patches
 
-The upstream archive hashes remain pinned in dependencies.lock.json. Each
+The upstream archive hashes remain pinned in third_party/dependencies.lock.json. Each
 dependency may also list a repository-contained patch manifest and its SHA256.
 tools/bootstrap.py verifies and applies these patches even when extraction is
 already stamped complete. Exact before/after source hashes make application

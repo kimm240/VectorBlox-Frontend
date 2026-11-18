@@ -74,7 +74,7 @@ def main():
     p.add_argument('--ninja',default='ninja')
     args=p.parse_args()
     if args.jobs<1:p.error('--jobs must be positive')
-    lock=json.loads((ROOT/'dependencies.lock.json').read_text())
+    lock=json.loads((ROOT/'third_party/dependencies.lock.json').read_text())
     for dep in lock['dependencies']:
         prepare(dep,args.offline)
         apply_patches(ROOT,dep)

@@ -36,7 +36,7 @@ For an offline build, first populate `.deps/downloads`, then run:
 python3 tools/bootstrap.py --offline --jobs 2
 ```
 
-See `dependencies.lock.json`, [third-party notices](THIRD_PARTY_NOTICES.md), and
+See `third_party/dependencies.lock.json`, [third-party notices](docs/THIRD_PARTY_NOTICES.md), and
 [dependency patches](third_party/patches/README.txt) for versions and provenance.
 
 ## Run ONNX legalization
@@ -65,7 +65,7 @@ Create a separate Python environment for tests:
 ```sh
 python3 -m venv .venv
 . .venv/bin/activate
-python -m pip install -r requirements-test.txt
+python -m pip install -r tests/requirements.txt
 python tests/compare_onnx.py input.onnx legalized.onnx \
   --samples 10 --edge-cases --atol 1e-4 --rtol 1e-4 \
   --report numerical-report.json
@@ -143,4 +143,4 @@ model archives, tutorial sweeps or board benchmark tooling.
 ## License
 
 Original project code is licensed under [Apache-2.0](LICENSE). Third-party
-components retain their own licenses; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+components retain their own licenses; see [third-party notices](docs/THIRD_PARTY_NOTICES.md).
