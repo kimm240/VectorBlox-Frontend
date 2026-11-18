@@ -2,27 +2,8 @@
 
 [![ONNX numerical correctness](https://github.com/kimm240/VectorBlox-Frontend/actions/workflows/onnx-numerical.yml/badge.svg)](https://github.com/kimm240/VectorBlox-Frontend/actions/workflows/onnx-numerical.yml)
 
-An unofficial **C++17/MLIR model legalization frontend for the VectorBlox SDK**.
-It rewrites supported ONNX graph patterns into forms the SDK can compile, and
-provides an additional layout legalization stage for the SDK's TFLite JSON IR.
-
-The goal is to turn real model compilation failures into reusable, guarded
-rewrite rules. Rules match graph structure, shapes, types and metadata—not model
-names. This is an independent project, not an official Microchip product.
-
-```text
-ONNX → MLIR tensor SSA → legalization → ONNX
-                                           ↓ external ONNX-to-TFLite conversion
-                                        TFLite
-                                           ↓ optional SDK adapter
-               official SDK transforms → MLIR layout legalization → SDK VNNX
-```
-
-MLIR 20.1.8 supplies SSA, PatternRewriter, the greedy driver, PassManager,
-verification and guarded view canonicalization. The IR is a small proxy for
-source graphs, not a complete ONNX dialect or a hardware code generator.
-Unsupported patterns remain unchanged; an unchanged graph may still be rejected
-by the downstream SDK.
+A frontend for VectorBlox using MLIR.
+It rewrites operators currently unsupported by the VectorBlox SDK into combinations of supported operators.
 
 ## Supported model cases
 
