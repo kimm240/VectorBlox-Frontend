@@ -30,11 +30,6 @@ python3 tools/bootstrap.py --jobs 2
 build/vbx-rewrite --help
 ```
 
-Bootstrap downloads hash-pinned, selected LLVM/MLIR and Protobuf sources into
-`.deps` and builds inside this checkout. It does not require a system LLVM/MLIR
-installation or download every LLVM backend. A cold build takes substantially
-longer than running a rewrite. Increase `--jobs` if the host has sufficient RAM.
-
 For an offline build, first populate `.deps/downloads`, then run:
 
 ```sh
