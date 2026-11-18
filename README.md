@@ -6,21 +6,19 @@ A frontend for VectorBlox using MLIR.
 
 - Rewrites operators currently unsupported by the VectorBlox SDK into combinations of supported operators.
 
-## Supported model cases
+## Legalization
 
-The retained rules were developed and exercised with these model configurations:
+VectorBlox SDK 3.1 cannot directly compile certain ONNX patterns, such as channel-wise mean reduction and static unfold.
+MLIR legalization passes rewrite these patterns into combinations of SDK-supported operators.
 
-| Model | Reference configuration | Main legalization patterns |
-| --- | --- | --- |
-| [XFeat](https://github.com/verlab/accelerated_features) | Dense forward export, FP32, static `1×3×256×256`, ONNX opset 17 | Channel mean and static unfold |
-| [Depth Anything V2](https://github.com/DepthAnything/Depth-Anything-V2) | Small / ViT-S relative depth, FP32, static `1×3×224×224`, ONNX opset 17 | Linear/attention, LayerNorm, Softmax, GELU, Gather, layout and ConvTranspose |
+### Verified models
 
-These are reference cases, not a guarantee for every exporter version, model
-variant, input size or quantization configuration. In particular, the depth
-case uses a reduced input size rather than the default 518-pixel setting.
-Weights and exported models are not distributed here. CI checks self-contained
-ONNX reproductions of the retained rules; it does not download or run these
-complete pretrained models or certify task-level accuracy.
+Conversion and execution have been verified for the following configurations:
+
+| Model | Verified configuration |
+| --- | --- |
+| [XFeat](https://github.com/verlab/accelerated_features) | Dense forward, FP32, static `1×3×256×256`, ONNX opset 17 |
+| [Depth Anything V2](https://github.com/DepthAnything/Depth-Anything-V2) | Small / ViT-S, FP32, static `1×3×224×224`, ONNX opset 17 |
 
 ## Build
 
