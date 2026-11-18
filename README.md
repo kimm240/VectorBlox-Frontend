@@ -40,6 +40,7 @@ Conversion and execution have been verified for the following configurations:
 | --- | --- |
 | [XFeat](https://github.com/verlab/accelerated_features) | Dense forward, FP32, static `1×3×256×256`, ONNX opset 17 |
 | [Depth Anything V2](https://github.com/DepthAnything/Depth-Anything-V2) | Small / ViT-S, FP32, static `1×3×224×224`, ONNX opset 17 |
+| [RepVGG-A0](https://github.com/DingXiaoH/RepVGG) | timm 0.9.16, unfused parallel Conv branches, FP32, static `1×3×224×224`, ONNX opset 17 |
 
 ### 2. Run ONNX legalization
 

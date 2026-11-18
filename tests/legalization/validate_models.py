@@ -1,4 +1,4 @@
-"""Convert supplied XFeat and Depth Anything V2 ONNX exports and compare outputs."""
+"""Convert supplied verified model ONNX exports and compare outputs."""
 import argparse
 import json
 import os
@@ -12,8 +12,10 @@ ROOT = Path(__file__).resolve().parents[2]
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--xfeat', type=Path, required=True)
-    parser.add_argument('--depth-anything-v2', type=Path, required=True)
+    parser.add_argument('--xfeat', type=Path)
+    parser.add_argument('--depth-anything-v2', type=Path)
+    parser.add_argument('--repvgg-a0', type=Path)
+    parser.add_argument('--repvgg-inputs', type=Path, nargs='+', help='Optional NPZ inputs')
     parser.add_argument('--xfeat-inputs', type=Path, nargs='+', help='Optional NPZ inputs')
     parser.add_argument('--depth-inputs', type=Path, nargs='+', help='Optional NPZ inputs')
     parser.add_argument('--binary', type=Path, default=ROOT / 'build/vbx-rewrite')
@@ -22,12 +24,17 @@ def main():
     parser.add_argument('--atol', type=float, default=1e-4)
     parser.add_argument('--rtol', type=float, default=1e-3)
     args = parser.parse_args()
+    if not any([args.xfeat, args.depth_anything_v2, args.repvgg_a0]):
+        parser.error('Supply at least one verified model ONNX path')
     args.out.mkdir(parents=True, exist_ok=True)
     results = []
     for name, source, inputs in [
         ('xfeat', args.xfeat, args.xfeat_inputs),
         ('depth-anything-v2', args.depth_anything_v2, args.depth_inputs),
+        ('repvgg-a0', args.repvgg_a0, args.repvgg_inputs),
     ]:
+        if source is None:
+            continue
         result = {'model': name, 'source': str(source.resolve()), 'passed': False}
         temporary = None
         try:

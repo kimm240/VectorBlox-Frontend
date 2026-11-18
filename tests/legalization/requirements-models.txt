@@ -3,3 +3,5 @@
 torch==2.3.0+cpu
 torchvision==0.18.0+cpu
 opencv-python-headless==4.10.0.84
+timm==0.9.16
+safetensors==0.4.3

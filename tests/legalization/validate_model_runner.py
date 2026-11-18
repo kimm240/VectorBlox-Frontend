@@ -45,3 +45,24 @@ with tempfile.TemporaryDirectory() as directory:
         for path, data in saved.items():
             assert path.read_bytes() == data, path
         print(name + ': PASS')
+
+# The new model option works independently and in the complete verified set.
+with tempfile.TemporaryDirectory() as directory:
+    root = Path(directory)
+    before = root / 'matched.onnx'
+    onnx.save(model(True), before)
+    for label, flags, count in [
+        ('repvgg-only', ['--repvgg-a0', str(before)], 1),
+        ('all-three', ['--xfeat', str(before), '--depth-anything-v2', str(before),
+                       '--repvgg-a0', str(before)], 3),
+    ]:
+        out = root / label
+        run = subprocess.run([sys.executable, str(Path(__file__).with_name('validate_models.py')),
+                              *flags, '--samples', '1', '--out', str(out)], capture_output=True, text=True)
+        report = json.loads((out/'results.json').read_text())
+        assert run.returncode == 0 and report['passed'] and len(report['models']) == count, (run.stdout,run.stderr,report)
+        assert not list(root.glob('*.legalized-*.onnx'))
+        print(label + ': PASS')
+    run = subprocess.run([sys.executable, str(Path(__file__).with_name('validate_models.py'))],
+                         capture_output=True, text=True)
+    assert run.returncode != 0

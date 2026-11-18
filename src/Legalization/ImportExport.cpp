@@ -179,7 +179,7 @@ void importGraph(Bridge &bridge, mlir::ModuleOp module) {
         (node.op_type() == "MatMul" || node.op_type() == "Gemm" ||
          node.op_type() == "ConvTranspose" || node.op_type() == "Slice" ||
          node.op_type() == "Gather" || node.op_type() == "LayerNormalization" ||
-         node.op_type() == "Softmax" || node.op_type() == "Mul");
+         node.op_type() == "Softmax" || node.op_type() == "Mul" || node.op_type() == "Add");
     std::string opname = mean      ? "vbx_onnx.ReduceMean"
                          : reshape ? "vbx_onnx.Reshape"
                          : legal   ? "vbx_onnx." + node.op_type()

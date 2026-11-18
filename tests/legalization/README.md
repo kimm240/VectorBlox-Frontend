@@ -9,6 +9,7 @@ Run commands from the repository root after building the frontend and installing
 python tests/legalization/validate_numerical_comparator.py
 python tests/legalization/validate_onnx.py
 python tests/legalization/validate_unfold.py
+python tests/legalization/validate_conv_branches.py
 python tests/legalization/validate_legalizations.py
 python tests/legalization/validate_model_runner.py
 ```
@@ -16,6 +17,7 @@ python tests/legalization/validate_model_runner.py
 | Suite | Coverage |
 | --- | --- |
 | `rewrite_test.cpp`, `validate_onnx.py` | Channel mean, legality guards, external data and numerical equivalence |
+| `validate_conv_branches.py` | Parallel Conv branch fusion numerical equivalence, idempotence and rejection guards |
 | `validate_unfold.py` | Static unfold and rejection guards |
 | `validate_legalizations.py` | Linear/attention, LayerNorm, GELU, Softmax, Gather, Slice and ConvTranspose patterns |
 | `validate_numerical_comparator.py` | Reject incorrect values, output names/shapes and nonfinite outputs |
@@ -36,11 +38,11 @@ python -m pip install -r tests/legalization/requirements-models.txt
 python tests/legalization/prepare_models.py
 ```
 
-This downloads official sources and weights pinned in `model_sources.json`,
+This downloads source repositories and pretrained weights pinned in `model_sources.json`,
 checks their revisions/hashes, and reproduces the previous PyTorch export route:
 
 ```text
-Official PyTorch model + pretrained weights
+Pinned PyTorch implementation + pretrained weights
   -> torch.onnx.export (opset 17)
   -> ONNX shape inference (intermediate shapes/types)
   -> original ONNX
@@ -66,25 +68,34 @@ push/PR CI runs the generated fixtures without model downloads.
 
 ### Validate existing ONNX exports
 
-`validate_models.py` converts both supplied ONNX models, requires at least one
+`validate_models.py` converts the supplied ONNX models, requires at least one
 rewrite per model, and checks original versus rewritten outputs using identical
-inputs. Both must pass; a missing model, failed conversion, zero rewrites or
+inputs. Every supplied model must pass; a missing model, failed conversion, zero rewrites or
 numerical mismatch returns a nonzero exit code.
 
 ```sh
 python tests/legalization/validate_models.py \
   --xfeat /path/to/xfeat.onnx \
-  --depth-anything-v2 /path/to/depth-anything-v2.onnx
+  --depth-anything-v2 /path/to/depth-anything-v2.onnx \
+  --repvgg-a0 /path/to/repvgg-a0.onnx
 ```
 
-Use XFeat dense FP32 `1×3×256×256` and Depth Anything V2 Small/ViT-S FP32
+Provide one or more of these model options. To export and validate only RepVGG-A0:
+
+```sh
+python tests/legalization/prepare_models.py --models repvgg-a0
+```
+
+Use XFeat dense FP32 `1×3×256×256`, Depth Anything V2 Small/ViT-S FP32
+`1×3×224×224`, or RepVGG-A0 (timm 0.9.16, unfused branches) FP32
 `1×3×224×224`, exported with ONNX opset 17. Supply your own exports and weights;
 the runner does not verify the model's identity from its filename.
 It replaces the old optional `validate_onnx.py --xfeat` check.
 
 By default each model gets three deterministic uniform `[0,1)` inputs, with
 `atol=1e-4` and `rtol=1e-3` (configurable). For actual preprocessed model inputs,
-use `--xfeat-inputs sample.npz` and `--depth-inputs sample.npz`; NPZ keys must
+use `--xfeat-inputs sample.npz`, `--depth-inputs sample.npz` or
+`--repvgg-inputs sample.npz`; NPZ keys must
 match ONNX input names. This checks sampled numerical equivalence, not task accuracy.
 ONNX Runtime graph optimizations are disabled and all outputs must match.
 

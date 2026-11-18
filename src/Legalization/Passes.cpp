@@ -21,6 +21,7 @@ public:
   }
   void runOnOperation() override {
     mlir::RewritePatternSet patterns(&getContext());
+    populateConvBranchPatterns(patterns, *bridge_);
     populateChannelMeanPatterns(patterns, *bridge_);
     populateUnfoldPatterns(patterns, *bridge_);
     populateLegalizationPatterns(patterns, *bridge_);

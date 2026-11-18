@@ -10,6 +10,7 @@ metadata, never model names.
 | Source | Original limitation / motivation | Rewrite |
 | --- | --- | --- |
 | [ChannelMean.cpp](ChannelMean.cpp) | Channel-wise mean reduction in XFeat needs a supported lowering | Static NCHW FP32 `ReduceMean`, channel axis with `keepdims=1`, becomes a 1×1 Conv with averaging weights |
+| [ConvBranches.cpp](ConvBranches.cpp) | Parallel Conv branches feeding Add can fail SDK fusion (RepVGG export) | Merge same-input, constant FP32, odd-kernel Conv branches into one Conv with centered summed kernels and biases |
 | [Unfold.cpp](Unfold.cpp) | Exported static unfold chains are not directly supported | Recognized reshape/transpose/slice patterns become a one-hot strided Conv |
 | [Legalize.cpp](Legalize.cpp): MatMul / Gemm | Linear and attention tensor layouts need SDK-compatible lowering | Guarded Conv-based linear lowering and attention decomposition |
 | LayerNormalization | Rank-changing normalization fusion and large intermediate broadcasts caused SDK allocation failures | Decompose normalization into supported arithmetic and Conv reductions; tile independent rows and place the square after layout conversion |

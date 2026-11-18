@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       full_models:
-        description: Export official XFeat and Depth Anything V2 and compare legalized outputs
+        description: Export verified models and compare legalized outputs
         type: boolean
         default: false
 
@@ -54,13 +54,15 @@ jobs:
         run: python tests/legalization/validate_onnx.py
       - name: Compare unfold ONNX before and after legalization
         run: python tests/legalization/validate_unfold.py
+      - name: Compare parallel Conv branch fusion
+        run: python tests/legalization/validate_conv_branches.py
       - name: Compare remaining ONNX legalization patterns
         run: python tests/legalization/validate_legalizations.py
       - name: Check full-model runner controls
         run: python tests/legalization/validate_model_runner.py
       - name: Check dependency patches
         run: python tests/validate_dependency_patches.py
-      - name: Export and validate official full models
+      - name: Export and validate verified full models
         if: github.event_name == 'workflow_dispatch' && inputs.full_models
         run: |
           python -m pip install -r tests/legalization/requirements-models.txt

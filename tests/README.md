@@ -7,7 +7,7 @@ python -m pip install -r tests/requirements.txt
 ```
 
 - [Legalization tests](legalization/README.md): pattern regressions, ONNX numerical
-  comparison, and XFeat / Depth Anything V2 full-model checks with supplied exports.
+  comparison, and XFeat / Depth Anything V2 / RepVGG-A0 full-model checks with supplied exports.
 - `python tests/validate_dependency_patches.py`: dependency patch integrity and
   idempotence checks.
 

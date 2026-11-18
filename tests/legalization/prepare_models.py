@@ -1,4 +1,4 @@
-"""Fetch pinned official models, export ONNX, then test frontend output equivalence."""
+"""Fetch pinned model implementations and weights, export ONNX, then test frontend output equivalence."""
 import argparse
 import hashlib
 import json
@@ -22,15 +22,17 @@ def digest(path):
 
 def prepare(name, out):
     config = SOURCES[name]
-    repo = out / 'repos' / name
-    repo.parent.mkdir(parents=True, exist_ok=True)
-    if not repo.exists():
-        subprocess.run(['git', 'clone', '--no-checkout', config['url'], str(repo)], check=True)
-        subprocess.run(['git', '-C', str(repo), 'checkout', '--detach', config['commit']], check=True)
-    revision = subprocess.check_output(['git', '-C', str(repo), 'rev-parse', 'HEAD'], text=True).strip()
-    if revision != config['commit'] or subprocess.check_output(
-            ['git', '-C', str(repo), 'status', '--porcelain', '--untracked-files=no'], text=True).strip():
-        raise RuntimeError(f'{repo}: expected clean pinned revision {config["commit"]}')
+    repo = None
+    if 'commit' in config:
+        repo = out / 'repos' / name
+        repo.parent.mkdir(parents=True, exist_ok=True)
+        if not repo.exists():
+            subprocess.run(['git', 'clone', '--no-checkout', config['url'], str(repo)], check=True)
+            subprocess.run(['git', '-C', str(repo), 'checkout', '--detach', config['commit']], check=True)
+        revision = subprocess.check_output(['git', '-C', str(repo), 'rev-parse', 'HEAD'], text=True).strip()
+        if revision != config['commit'] or subprocess.check_output(
+                ['git', '-C', str(repo), 'status', '--porcelain', '--untracked-files=no'], text=True).strip():
+            raise RuntimeError(f'{repo}: expected clean pinned revision {config["commit"]}')
     weight = (out / 'weights' / config['weight']) if 'weight_url' in config else repo / config['weight']
     if not weight.exists() and 'weight_url' in config:
         weight.parent.mkdir(parents=True, exist_ok=True)
@@ -64,18 +66,31 @@ def export(name, out):
             'torch': torch.__version__, 'onnx': onnx.__version__, 'onnxruntime': ort.__version__}
     try:
         repo, weight = prepare(name, out)
-        sys.path.insert(0, str(repo))
+        if repo is not None:
+            sys.path.insert(0, str(repo))
         torch.set_num_threads(2)
         torch.manual_seed(20261112)
         if name == 'xfeat':
             from modules.model import XFeatModel
             model = XFeatModel()
             meta['scope'] = 'dense forward; sparse keypoint extraction and matching excluded'
-        else:
+        elif name == 'depth-anything-v2':
             from depth_anything_v2.dpt import DepthAnythingV2
             model = DepthAnythingV2(encoder='vits', features=64, out_channels=[48, 96, 192, 384])
             meta['scope'] = 'Small relative-depth forward at 224x224; preprocessing excluded'
-        model.load_state_dict(torch.load(weight, map_location='cpu', weights_only=True))
+        else:
+            import timm
+            if timm.__version__ != SOURCES[name]['version']:
+                raise RuntimeError('Use the pinned timm model-test version')
+            model = timm.create_model(SOURCES[name]['architecture'], pretrained=False)
+            meta['scope'] = 'RepVGG-A0 classification logits with unfused Conv branches; preprocessing excluded'
+            meta['implementation'] = 'timm ' + timm.__version__
+        if weight.suffix == '.safetensors':
+            from safetensors.torch import load_file
+            state = load_file(str(weight), device='cpu')
+        else:
+            state = torch.load(weight, map_location='cpu', weights_only=True)
+        model.load_state_dict(state)
         model.eval()
         size = SOURCES[name]['size']
         x = torch.rand(1, 3, size, size)
@@ -116,6 +131,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--out', type=Path, default=ROOT / 'artifacts/model-validation')
     parser.add_argument('--binary', type=Path, default=ROOT / 'build/vbx-rewrite')
+    parser.add_argument('--models', choices=SOURCES, nargs='+', help='Only prepare and validate these models; default: all verified models')
     parser.add_argument('--export-model', choices=SOURCES, help=argparse.SUPPRESS)
     args = parser.parse_args()
     out = args.out.resolve()
@@ -124,7 +140,8 @@ def main():
         export(args.export_model, out)
         return
     results = []
-    for name in SOURCES:
+    selected = args.models or list(SOURCES)
+    for name in selected:
         log = out / (name + '.export.log')
         with log.open('w') as stream:
             run = subprocess.run([sys.executable, str(Path(__file__).resolve()), '--out', str(out),
@@ -134,9 +151,9 @@ def main():
     summary = {'exports': results, 'passed': False}
     if all(r['passed'] for r in results):
         command = [sys.executable, str(HERE / 'validate_models.py'),
-                   '--xfeat', str(out / 'xfeat/model.onnx'),
-                   '--depth-anything-v2', str(out / 'depth-anything-v2/model.onnx'),
                    '--out', str(out / 'comparison'), '--binary', str(args.binary.resolve())]
+        for name in selected:
+            command += ['--' + name, str(out / name / 'model.onnx')]
         run = subprocess.run(command)
         summary['passed'] = run.returncode == 0
         summary['comparison'] = str(out / 'comparison/results.json')

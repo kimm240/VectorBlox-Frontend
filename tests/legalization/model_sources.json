@@ -13,5 +13,14 @@
     "weight": "depth_anything_v2_vits.pth",
     "weight_sha256": "715fade13be8f229f8a70cc02066f656f2423a59effd0579197bbf57860e1378",
     "size": 224
+  },
+  "repvgg-a0": {
+    "implementation": "timm",
+    "version": "0.9.16",
+    "architecture": "repvgg_a0",
+    "weight_url": "https://huggingface.co/timm/repvgg_a0.rvgg_in1k/resolve/e292d220aa8b811232037f8aa6d6c8c552dbd0c0/model.safetensors",
+    "weight": "repvgg_a0.safetensors",
+    "weight_sha256": "2b2bfd7feff2e4aaacfa828b20e84c44df56abacb341b764550f890634789608",
+    "size": 224
   }
 }
