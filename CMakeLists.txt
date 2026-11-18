@@ -45,7 +45,7 @@ add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/onnx.pb.cc" "${CMAKE_CURR
 add_library(vbx_onnx_schema STATIC "${CMAKE_CURRENT_BINARY_DIR}/onnx.pb.cc")
 target_include_directories(vbx_onnx_schema PUBLIC "${CMAKE_CURRENT_BINARY_DIR}")
 target_link_libraries(vbx_onnx_schema PUBLIC libprotobuf)
-# Shared include/link requirements for the two compiler components.
+# Include/link requirements for the ONNX frontend.
 add_library(vbx_compiler_dependencies INTERFACE)
 target_include_directories(vbx_compiler_dependencies INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/include")
 target_include_directories(vbx_compiler_dependencies SYSTEM INTERFACE
@@ -59,7 +59,7 @@ if(VBX_ENABLE_LTO)
   include(CheckIPOSupported)
   check_ipo_supported(RESULT VBX_IPO_SUPPORTED OUTPUT VBX_IPO_ERROR)
   if(VBX_IPO_SUPPORTED)
-    set_property(TARGET vbx_onnx_frontend vbx_vectorblox_target vbx-rewrite
+    set_property(TARGET vbx_onnx_frontend vbx-rewrite
       PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
   endif()
 endif()

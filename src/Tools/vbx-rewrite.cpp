@@ -35,24 +35,6 @@ void writeText(const std::string &path, const std::string &text) {
   if (!out || !(out << text))
     throw std::runtime_error("Cannot write " + path);
 }
-void writeTextAtomic(const fs::path &path, const std::string &text) {
-  std::string temp = path.string() + ".tmp.XXXXXX";
-  int fd = mkstemp(temp.data());
-  if (fd < 0)
-    throw std::runtime_error("Cannot create output temporary file");
-  close(fd);
-  try {
-    std::ofstream out(temp);
-    out << text;
-    out.close();
-    if (!out)
-      throw std::runtime_error("JSON output flush failed");
-    fs::rename(temp, path);
-  } catch (...) {
-    fs::remove(temp);
-    throw;
-  }
-}
 void writeModel(const fs::path &path, const onnx::ModelProto &model) {
   std::string temp = path.string() + ".tmp.XXXXXX";
   int fd = mkstemp(temp.data());
@@ -77,14 +59,12 @@ int main(int argc, char **argv) {
   try {
     auto totalStart = Clock::now();
     std::string input, output, report, dump;
-    bool sdkJson = false;
     vbx::Options options;
     for (int i = 1; i < argc; ++i) {
       std::string a = argv[i];
       if (a == "--help" || a == "-h") {
         std::cout
-            << "vbx-rewrite INPUT OUTPUT [--report FILE] [--dump-mlir FILE]\n"
-            << "  --sdk-json: SDK flatc JSON layout legalization\n"
+            << "vbx-rewrite INPUT.onnx OUTPUT.onnx [--report FILE] [--dump-mlir FILE]\n"
             << "  --max-channels N: ONNX channel policy limit\n"
             << "  --max-rewrites N: maximum rewrite count\n";
         return 0;
@@ -94,9 +74,7 @@ int main(int argc, char **argv) {
           throw std::runtime_error("Missing value for " + a);
         return std::string(argv[i]);
       };
-      if (a == "--sdk-json")
-        sdkJson = true;
-      else if (a == "--report")
+      if (a == "--report")
         report = value();
       else if (a == "--dump-mlir")
         dump = value();
@@ -129,35 +107,6 @@ int main(int argc, char **argv) {
     if (!report.empty() && !dump.empty() &&
         fs::weakly_canonical(report) == fs::weakly_canonical(dump))
       throw std::runtime_error("Report and dump must be different files");
-    if (sdkJson) {
-      std::ifstream file(input);
-      if (!file)
-        throw std::runtime_error("Cannot read SDK JSON input");
-      std::string text((std::istreambuf_iterator<char>(file)), {}), ir;
-      auto stats =
-          vbx::rewriteSdkJson(text, options, dump.empty() ? nullptr : &ir);
-      writeTextAtomic(out, text);
-      std::ostringstream json;
-      json << "{\n  \"engine\": \"MLIR 20.1.8\",\n  \"format\": "
-              "\"tflite-sdk-json\",\n  \"nodes\": "
-           << stats.nodes << ",\n  \"candidates\": " << stats.candidates
-           << ",\n  \"rewrites\": " << stats.rewrites
-           << ",\n  \"total_ms\": " << ms(totalStart) << ",\n  \"skipped\": {";
-      bool firstSkip = true;
-      for (const auto &[reason, count] : stats.skipped) {
-        if (!firstSkip)
-          json << ", ";
-        firstSkip = false;
-        json << '"' << reason << "\": " << count;
-      }
-      json << "}\n}\n";
-      if (!dump.empty())
-        writeText(dump, ir);
-      if (!report.empty())
-        writeText(report, json.str());
-      std::cout << json.str();
-      return 0;
-    }
     auto start = Clock::now();
     std::ifstream file(input, std::ios::binary);
     onnx::ModelProto model;

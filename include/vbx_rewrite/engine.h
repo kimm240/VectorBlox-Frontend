@@ -20,8 +20,4 @@ struct Stats {
 Stats rewriteModel(onnx::ModelProto &model, const Options &options = {},
                    std::string *mlir_dump = nullptr);
 bool hasExternalData(const onnx::ModelProto &model);
-// Layout-only legalization of the SDK's flatc TFLite JSON representation.
-// Preserves quantization and uses the same upstream MLIR rewrite driver.
-Stats rewriteSdkJson(std::string &json, const Options &options = {},
-                     std::string *mlir_dump = nullptr);
 } // namespace vbx

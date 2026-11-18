@@ -89,8 +89,8 @@ python tests/compare_onnx.py input.onnx legalized.onnx \
 
 [GitHub Actions](.github/workflows/onnx-numerical.yml) builds the native tool,
 creates ONNX fixtures, applies legalization and compares before/after outputs.
-It also checks that intentionally incorrect outputs are rejected and runs SDK
-layout guard tests. Numerical reports are uploaded as workflow artifacts even
+It also checks that intentionally incorrect outputs are rejected.
+Numerical reports are uploaded as workflow artifacts even
 when a later test fails. Channel-mean tests use `atol=rtol=3e-5`, unfold requires
 exact equality, and general legalization tests use `atol=rtol=1e-4` with random
 and constant inputs. This is sampled equivalence testing, not a proof for every
@@ -99,29 +99,6 @@ input or a measurement of INT8/task accuracy.
 To run the same standalone suites locally, see [tests/README.md](tests/README.md).
 Tests never run inside a normal compiler invocation. CI does not compile VNNX
 or connect to a board.
-
-## Optional VectorBlox SDK integration
-
-ONNX-to-TFLite export/quantization is a separate step using the SDK's supported
-tooling. Given a prepared TFLite model, the optional adapter targets official
-VectorBlox SDK `release-v3.1`, commit
-`f5a428c3c0ee7e06ad06657c5fcdcc1eda8cf046`.
-
-```sh
-git clone --branch release-v3.1 --depth 1 \
-  https://github.com/Microchip-Vectorblox/VectorBlox-SDK.git .deps/vectorblox-sdk-3.1
-# Set up and activate that SDK's Python environment using its instructions.
-python tools/compile_sdk.py model.tflite -o model.vnnx
-```
-
-The adapter checks the SDK commit and simulator hash against
-`targets/vectorblox-3.1.json`, applies C++ layout legalization and invokes SDK
-VNNX generation. It leaves SDK sources untouched. To run just the C++ stage on
-an SDK flatc JSON graph:
-
-```sh
-build/vbx-rewrite --sdk-json before.json after.json --report layout-report.json
-```
 
 ## Contributing
 
@@ -154,10 +131,9 @@ preconditions and test results.
 ## Project layout
 
 - `src/Frontend/ONNX/`: ONNX import/export, legalization pass and patterns.
-- `src/Target/VectorBlox/`: SDK JSON/SSA bridge and layout legalization.
 - `src/Tools/`: `vbx-rewrite` CLI.
 - `include/vbx_rewrite/`: public C++ API.
-- `tools/`: pinned dependency bootstrap and optional SDK adapter.
+- `tools/`: pinned dependency bootstrap.
 - `tests/`: standalone numerical and guard tests.
 
 See [architecture](docs/architecture.md) for implementation boundaries. This
