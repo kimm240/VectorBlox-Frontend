@@ -3,7 +3,8 @@
 [![ONNX numerical correctness](https://github.com/kimm240/VectorBlox-Frontend/actions/workflows/onnx-numerical.yml/badge.svg)](https://github.com/kimm240/VectorBlox-Frontend/actions/workflows/onnx-numerical.yml)
 
 A frontend for VectorBlox using MLIR.
-It rewrites operators currently unsupported by the VectorBlox SDK into combinations of supported operators.
+
+- Rewrites operators currently unsupported by the VectorBlox SDK into combinations of supported operators.
 
 ## Supported model cases
 
