@@ -6,20 +6,6 @@ A frontend for VectorBlox using MLIR.
 
 - Rewrites operators currently unsupported by the VectorBlox SDK into combinations of supported operators.
 
-## Legalization
-
-VectorBlox SDK 3.1 cannot directly compile certain ONNX patterns, such as channel-wise mean reduction and static unfold.
-MLIR legalization passes rewrite these patterns into combinations of SDK-supported operators.
-
-### Verified models
-
-Conversion and execution have been verified for the following configurations:
-
-| Model | Verified configuration |
-| --- | --- |
-| [XFeat](https://github.com/verlab/accelerated_features) | Dense forward, FP32, static `1×3×256×256`, ONNX opset 17 |
-| [Depth Anything V2](https://github.com/DepthAnything/Depth-Anything-V2) | Small / ViT-S, FP32, static `1×3×224×224`, ONNX opset 17 |
-
 ## Build
 
 Use Linux with a C++17 compiler, CMake 3.20+, Ninja and Python 3. For example:
@@ -39,7 +25,21 @@ python3 tools/bootstrap.py --offline --jobs 2
 See `third_party/dependencies.lock.json`, [third-party notices](docs/THIRD_PARTY_NOTICES.md), and
 [dependency patches](third_party/patches/README.txt) for versions and provenance.
 
-## Run ONNX legalization
+## Legalization
+
+VectorBlox SDK 3.1 cannot directly compile certain ONNX patterns, such as channel-wise mean reduction and static unfold.
+MLIR legalization passes rewrite these patterns into combinations of SDK-supported operators.
+
+### 1. Verified models
+
+Conversion and execution have been verified for the following configurations:
+
+| Model | Verified configuration |
+| --- | --- |
+| [XFeat](https://github.com/verlab/accelerated_features) | Dense forward, FP32, static `1×3×256×256`, ONNX opset 17 |
+| [Depth Anything V2](https://github.com/DepthAnything/Depth-Anything-V2) | Small / ViT-S, FP32, static `1×3×224×224`, ONNX opset 17 |
+
+### 2. Run ONNX legalization
 
 ```sh
 build/vbx-rewrite input.onnx legalized.onnx \
@@ -58,7 +58,7 @@ external tensor data, keep the rewritten model in the original model directory:
 external weight files are not copied by this tool. `--max-channels` and
 `--max-rewrites` bound the applicable channel policy and rewrite count.
 
-## Check numerical correctness
+### 3. Check numerical correctness
 
 Create a separate Python environment for tests:
 
@@ -127,18 +127,6 @@ For a code contribution, add a small before/after numerical regression and
 rejection cases for unsupported shapes or semantics. Keep model-specific names
 out of rewrite matching. Open a pull request with the reproducer, the rule's
 preconditions and test results.
-
-## Project layout
-
-- `src/Frontend/ONNX/`: ONNX import/export, legalization pass and patterns.
-- `src/Tools/`: `vbx-rewrite` CLI.
-- `include/vbx_rewrite/`: public C++ API.
-- `tools/`: pinned dependency bootstrap.
-- `tests/`: standalone numerical and guard tests.
-
-See [architecture](docs/architecture.md) for implementation boundaries. This
-repository does not include the discontinued memory-scheduling experiments,
-model archives, tutorial sweeps or board benchmark tooling.
 
 ## License
 
