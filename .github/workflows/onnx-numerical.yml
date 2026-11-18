@@ -44,13 +44,15 @@ jobs:
       - name: Build legalization engine and run native checks
         run: python tools/bootstrap.py --test --jobs 2
       - name: Check numerical comparator rejects incorrect outputs
-        run: python tests/validate_numerical_comparator.py
+        run: python tests/legalization/validate_numerical_comparator.py
       - name: Compare channel-mean ONNX before and after legalization
-        run: python tests/validate_onnx.py
+        run: python tests/legalization/validate_onnx.py
       - name: Compare unfold ONNX before and after legalization
-        run: python tests/validate_unfold.py
+        run: python tests/legalization/validate_unfold.py
       - name: Compare remaining ONNX legalization patterns
-        run: python tests/validate_legalizations.py
+        run: python tests/legalization/validate_legalizations.py
+      - name: Check full-model runner controls
+        run: python tests/legalization/validate_model_runner.py
       - name: Check dependency patches
         run: python tests/validate_dependency_patches.py
       - name: Upload numerical reports

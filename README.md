@@ -47,11 +47,7 @@ build/vbx-rewrite input.onnx legalized.onnx \
   --dump-mlir legalized.mlir
 ```
 
-The rules include channel `ReduceMean → Conv`, static unfold, guarded
-MatMul/Gemm and attention lowering, LayerNormalization decomposition, Softmax
-and GELU tiling, scalar-Mul lowering, Gather, high-rank Slice and selected
-ConvTranspose decomposition. Shape, dtype, opset, cost and metadata guards limit
-each rule to supported forms. Nested graphs/functions are not rewritten.
+See [legalization passes](src/Frontend/ONNX/README.md) for supported patterns and their conditions.
 
 The tool writes a new model; input and output must be different files. For ONNX
 external tensor data, keep the rewritten model in the original model directory:
@@ -62,7 +58,7 @@ external weight files are not copied by this tool. `--max-channels` and
 
 ```sh
 python -m pip install -r tests/requirements.txt
-python tests/compare_onnx.py input.onnx legalized.onnx --report numerical-report.json
+python tests/legalization/compare_onnx.py input.onnx legalized.onnx --report numerical-report.json
 ```
 
 Compares both models' outputs using the same inputs. Prints `PASS` when outputs match within tolerance, or `FAIL` otherwise. Detailed results are saved to `numerical-report.json`.

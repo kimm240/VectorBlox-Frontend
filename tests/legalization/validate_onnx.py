@@ -29,7 +29,7 @@ def session(path):
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--binary',type=Path,default=Path('build/vbx-rewrite'))
-    p.add_argument('--xfeat',type=Path);p.add_argument('--out',type=Path,default=Path('artifacts/validation'))
+    p.add_argument('--out',type=Path,default=Path('artifacts/validation'))
     args=p.parse_args();binary=args.binary.resolve();args.out.mkdir(parents=True,exist_ok=True)
     results=[];rng=np.random.default_rng(12345)
     def rewrite(source,dest,extra=()):
@@ -65,18 +65,6 @@ def main():
     assert subprocess.run([str(binary),str(external_path),str(relocated/'out.onnx')],capture_output=True).returncode!=0
     rewrite(external_path,args.out/'external.rewritten.onnx')
     onnx.checker.check_model(str(args.out/'external.rewritten.onnx'))
-    if args.xfeat:
-        source=args.xfeat.resolve();dest=args.out/'xfeat.rewritten.onnx';stats=rewrite(source,dest)
-        assert stats['rewrites']>=1;onnx.checker.check_model(onnx.load(dest))
-        original,changed=session(source),session(dest);errors=[]
-        shape=original.get_inputs()[0].shape;name=original.get_inputs()[0].name
-        for _ in range(3):
-            x=rng.random(shape,dtype=np.float32)
-            before=original.run(None,{name:x});after=changed.run(None,{name:x})
-            for a,b in zip(before,after):
-                assert np.isfinite(a).all() and np.isfinite(b).all()
-                np.testing.assert_allclose(a,b,atol=1e-4,rtol=1e-3);errors.append(float(np.max(np.abs(a-b))))
-        results.append({'case':'xfeat','max_abs_error':max(errors),'stats':stats})
     # Mostly non-matching graph: demonstrate root dispatch, not a runtime-speed claim.
     big=model();big.graph.ClearField('node')
     for i in range(10000):big.graph.node.append(h.make_node('Identity',['x'],[f'id{i}']))

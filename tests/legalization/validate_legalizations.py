@@ -108,7 +108,7 @@ def main():
         src=a.out/(name+'.onnx');dst=a.out/(name+'.rewritten.onnx');onnx.save(m,src)
         stats=json.loads(subprocess.check_output([str(a.binary.resolve()),str(src),str(dst)],text=True));assert stats['rewrites']==count,(name,stats)
         if count==0:assert m.SerializeToString()==onnx.load(dst).SerializeToString()
-        subprocess.run([__import__('sys').executable,'tests/compare_onnx.py',str(src),str(dst),'--samples','3','--distribution','normal','--edge-cases','--report',str(a.out/(name+'.json'))],check=True)
+        subprocess.run([__import__('sys').executable,'tests/legalization/compare_onnx.py',str(src),str(dst),'--samples','3','--distribution','normal','--edge-cases','--report',str(a.out/(name+'.json'))],check=True)
         stable=a.out/(name+'.again.onnx');again=json.loads(subprocess.check_output([str(a.binary.resolve()),str(dst),str(stable)],text=True))
         assert again['rewrites']==0,(name,again)
         assert onnx.load(dst).SerializeToString()==onnx.load(stable).SerializeToString()

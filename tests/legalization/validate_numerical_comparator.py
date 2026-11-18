@@ -8,7 +8,7 @@ import numpy as np
 import onnx
 from onnx import TensorProto, helper, numpy_helper
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / 'artifacts/numerical-comparator'
 OUT.mkdir(parents=True, exist_ok=True)
 
@@ -38,7 +38,7 @@ for name, candidate, expected in [
     after, report = OUT / (name + '.onnx'), OUT / (name + '.json')
     onnx.save(candidate, after)
     result = subprocess.run([
-        sys.executable, str(ROOT / 'tests/compare_onnx.py'), str(before), str(after),
+        sys.executable, str(ROOT / 'tests/legalization/compare_onnx.py'), str(before), str(after),
         '--samples', '2', '--edge-cases', '--report', str(report)],
         capture_output=True, text=True)
     evidence = json.loads(report.read_text())
