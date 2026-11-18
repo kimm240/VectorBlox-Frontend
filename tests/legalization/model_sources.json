@@ -1,0 +1,17 @@
+{
+  "xfeat": {
+    "url": "https://github.com/verlab/accelerated_features.git",
+    "commit": "e92685f57f8318b18725c5c8c0bd28c7fe188d9a",
+    "weight": "weights/xfeat.pt",
+    "weight_sha256": "0f5187fd7bedd26c7fe6acc9685444493a165a35ecc087b33c2db3627f3ea10b",
+    "size": 256
+  },
+  "depth-anything-v2": {
+    "url": "https://github.com/DepthAnything/Depth-Anything-V2.git",
+    "commit": "a561b849ebae10a6f5ef49e26c83cbbcd36c71bf",
+    "weight_url": "https://huggingface.co/depth-anything/Depth-Anything-V2-Small/resolve/03876f8651c73a60fe4c2c48294e09fcb6838fcf/depth_anything_v2_vits.pth",
+    "weight": "depth_anything_v2_vits.pth",
+    "weight_sha256": "715fade13be8f229f8a70cc02066f656f2423a59effd0579197bbf57860e1378",
+    "size": 224
+  }
+}

@@ -47,7 +47,7 @@ build/vbx-rewrite input.onnx legalized.onnx \
   --dump-mlir legalized.mlir
 ```
 
-See [legalization passes](src/Frontend/ONNX/README.md) for supported patterns and their conditions.
+See [legalization passes](src/Legalization/README.md) for supported patterns and their conditions.
 
 The tool writes a new model; input and output must be different files. For ONNX
 external tensor data, keep the rewritten model in the original model directory:
@@ -85,11 +85,6 @@ Error log or rewrite report:
 Minimal ONNX reproducer or export script:
 Expected result / before-after numerical report, if available:
 ```
-
-For a code contribution, add a small before/after numerical regression and
-rejection cases for unsupported shapes or semantics. Keep model-specific names
-out of rewrite matching. Open a pull request with the reproducer, the rule's
-preconditions and test results.
 
 ## License
 

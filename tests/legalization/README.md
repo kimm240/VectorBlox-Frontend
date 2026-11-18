@@ -27,6 +27,45 @@ weights and full models are not downloaded by CI.
 
 ## XFeat and Depth Anything V2
 
+### Generate ONNX and validate end to end
+
+```sh
+python3 -m venv .venv-models
+. .venv-models/bin/activate
+python -m pip install -r tests/legalization/requirements-models.txt
+python tests/legalization/prepare_models.py
+```
+
+This downloads official sources and weights pinned in `model_sources.json`,
+checks their revisions/hashes, and reproduces the previous PyTorch export route:
+
+```text
+Official PyTorch model + pretrained weights
+  -> torch.onnx.export (opset 17)
+  -> ONNX shape inference (intermediate shapes/types)
+  -> original ONNX
+  -> C++ MLIR legalization
+  -> rewritten ONNX
+  -> compare original / rewritten outputs
+```
+
+This follows the SDK tutorial's PyTorch-to-ONNX export approach; the SDK does not
+provide dedicated XFeat or Depth Anything V2 tutorials. No SDK installation,
+TFLite conversion or VNNX generation is involved. PyTorch-to-ONNX output
+agreement is checked before legalization. A failure at either stage fails the run.
+
+The default output/cache directory is `artifacts/model-validation/`. It retains
+raw exports (`exported.onnx`), shape-annotated models (`model.onnx`), export logs, source/weight provenance, export-check
+results and the final `results.json`; rewrite and numerical reports live in
+`comparison/`. Original ONNX files and downloaded weights are ignored by Git.
+Use `--out` to choose another directory. Re-running reuses verified downloads
+and re-exports both models. Dependencies are isolated in `.venv-models`.
+
+For GitHub Actions, choose **Run workflow** and enable **full_models**. Normal
+push/PR CI runs the generated fixtures without model downloads.
+
+### Validate existing ONNX exports
+
 `validate_models.py` converts both supplied ONNX models, requires at least one
 rewrite per model, and checks original versus rewritten outputs using identical
 inputs. Both must pass; a missing model, failed conversion, zero rewrites or

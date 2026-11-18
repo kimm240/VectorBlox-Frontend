@@ -14,7 +14,7 @@ were consulted during the cleanup; no IREE implementation or dependency was adde
 | `vbx_rewrite` | Aggregate public library interface |
 | `vbx-rewrite` | CLI parsing, atomic output and timing reports |
 
-`Frontend/ONNX/ImportExport.cpp` owns protobuf conversion and graph bookkeeping.
+`Legalization/ImportExport.cpp` owns protobuf conversion and graph bookkeeping.
 `Passes.cpp` assembles patterns and implements the pass; `ChannelMean.cpp`,
 `Legalize.cpp` and `Unfold.cpp` contain matching/lowering rules. `Passes.h`
 declares the factory and `Patterns.h` declares pattern population functions. The internal `Bridge.h` carries
