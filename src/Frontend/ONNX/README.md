@@ -35,5 +35,5 @@ instance of the original operator is unsupported or every variant is rewritten.
 rewrite driver. [ImportExport.cpp](ImportExport.cpp) handles ONNX import/export;
 [Bridge.h](Bridge.h) carries source graph metadata through the MLIR representation.
 
-See [legalization tests](../../../../tests/legalization/README.md) for per-pattern
+See [legalization tests](../../../tests/legalization/README.md) for per-pattern
 regressions and full-model conversion/numerical checks.
