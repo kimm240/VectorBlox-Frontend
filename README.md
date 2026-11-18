@@ -60,45 +60,12 @@ external weight files are not copied by this tool. `--max-channels` and
 
 ### 3. Check numerical correctness
 
-Create a separate Python environment for tests:
-
 ```sh
-python3 -m venv .venv
-. .venv/bin/activate
 python -m pip install -r tests/requirements.txt
-python tests/compare_onnx.py input.onnx legalized.onnx \
-  --samples 10 --edge-cases --atol 1e-4 --rtol 1e-4 \
-  --report numerical-report.json
+python tests/compare_onnx.py input.onnx legalized.onnx --report numerical-report.json
 ```
 
-The comparator runs both models with identical inputs using ONNX Runtime's CPU
-provider with graph optimizations disabled. It matches named inputs/outputs,
-checks shapes and dtypes, and applies
-`abs(after - before) <= atol + rtol * abs(before)` to floating outputs.
-Non-floating outputs require exact equality; nonfinite outputs fail. A mismatch
-returns a nonzero exit code.
-
-Generated random and zero/one inputs are appropriate only when the model's input
-domain permits them. For dynamic shapes, non-floating inputs, or realistic model
-inputs, supply NPZ files mapping input names to NumPy arrays:
-
-```sh
-python tests/compare_onnx.py input.onnx legalized.onnx \
-  --inputs sample1.npz sample2.npz --report numerical-report.json
-```
-
-[GitHub Actions](.github/workflows/onnx-numerical.yml) builds the native tool,
-creates ONNX fixtures, applies legalization and compares before/after outputs.
-It also checks that intentionally incorrect outputs are rejected.
-Numerical reports are uploaded as workflow artifacts even
-when a later test fails. Channel-mean tests use `atol=rtol=3e-5`, unfold requires
-exact equality, and general legalization tests use `atol=rtol=1e-4` with random
-and constant inputs. This is sampled equivalence testing, not a proof for every
-input or a measurement of INT8/task accuracy.
-
-To run the same standalone suites locally, see [tests/README.md](tests/README.md).
-Tests never run inside a normal compiler invocation. CI does not compile VNNX
-or connect to a board.
+Compares both models' outputs using the same inputs. Prints `PASS` when outputs match within tolerance, or `FAIL` otherwise. Detailed results are saved to `numerical-report.json`.
 
 ## Contributing
 
